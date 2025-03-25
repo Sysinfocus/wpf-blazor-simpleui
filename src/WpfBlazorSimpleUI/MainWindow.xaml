@@ -5,12 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfBlazorSimpleUI"
         xmlns:blazor="clr-namespace:Microsoft.AspNetCore.Components.WebView.Wpf;assembly=Microsoft.AspNetCore.Components.WebView.Wpf"
-        mc:Ignorable="d" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        mc:Ignorable="d" MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Icon="/wwwroot/icon-192.png"
-        Title="MainWindow" Height="450" Width="800">
-    <WindowChrome.WindowChrome>
-        <WindowChrome ResizeBorderThickness="1" />
-    </WindowChrome.WindowChrome>
+        Title="Home" Height="600" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <blazor:BlazorWebView HostPage="wwwroot\index.html" Services="{StaticResource services}">
             <blazor:BlazorWebView.RootComponents>
