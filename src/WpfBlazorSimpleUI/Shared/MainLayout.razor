@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@using windowState = System.Windows.WindowState
 
 <div class="container" @onclick="initialization.HandleMainLayoutClickEvent">
     <Sidebar Items="@sideBarItems" Show="@showMenu" IsSimpleSideBar="@isSimple"  Height="100%" OnMenuClick="HandleMenuClick"
@@ -15,12 +16,17 @@
     </Sidebar>
 
     <div class="flex-col g8 f1">
-        <div class="flex jcsb" style="padding: 0.9rem 1rem 0.05rem">
-            <div>
-                <Icon Size="20px" Name="apps" OnClick="() => showMenu = !showMenu" />
-                <Icon Size="20px" Name="switch" OnClick="() => isSimple = !isSimple" />
+        <div class="flex jcsb" style="padding: 1rem 1rem 0.25rem">
+            <div class="flex">
+                <Icon Size="20px" Name="apps" Tooltip="Show/Hide Sidebar" OnClick="() => showMenu = !showMenu" />
+                <Icon Size="20px" Name="switch" Tooltip="Toggle Sidebar Type" OnClick="() => isSimple = !isSimple" />
             </div>
-            <Icon Size="20px" Name="@(initialization.CurrentTheme == "light" ? "dark_mode" : "light_mode")" OnClick="initialization.ToggleTheme" />
+            <div class="flex">
+                <Icon Size="20px" Name="@(initialization.CurrentTheme == "light" ? "dark_mode" : "light_mode")" Tooltip="Toggle Theme" OnClick="initialization.ToggleTheme" />
+                <Icon Size="20px" Name="minimize" Tooltip="Minimize" OnClick="HandleMinimized" />
+                <Icon Size="20px" Name="fullscreen" Tooltip="Maximize / Restore" OnClick="HandleMaximizedRestore" />
+                <Icon Size="20px" Name="close" Tooltip="Close" OnClick="HandleClose" />
+            </div>
         </div>
         <Separator />
         <div style="padding: 0.25rem 1rem">@Body</div>
@@ -41,7 +47,17 @@
     {
         browserExtensions.Goto(item.Name);
         App.Current.MainWindow.Title = item.Name;
-    } 
+    }
+
+    private void HandleMinimized(MouseEventArgs args)
+        => App.Current.MainWindow.WindowState = windowState.Minimized;
+
+    private void HandleMaximizedRestore(MouseEventArgs args)
+        => App.Current.MainWindow.WindowState = App.Current.MainWindow.WindowState == windowState.Maximized
+            ? windowState.Normal
+            : windowState.Maximized;
+
+    private void HandleClose(MouseEventArgs args) => App.Current.MainWindow.Close();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
