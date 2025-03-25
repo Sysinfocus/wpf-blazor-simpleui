@@ -1,0 +1,47 @@
+﻿@page "/Weather"
+
+@using WpfBlazorSimpleUI.Data
+@inject WeatherForecastService ForecastService
+
+<div class="flex-col g8 mb1">
+	<h1>Weather forecast</h1>
+	<p>This component demonstrates fetching data from a service.</p>
+</div>
+
+@if (forecasts == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<Table>
+		<TableHeader>
+			<tr>
+				<th>Date</th>
+				<th>Temp. (C)</th>
+				<th>Temp. (F)</th>
+				<th>Summary</th>
+			</tr>
+		</TableHeader>
+		<TableBody>
+			@foreach (var forecast in forecasts)
+			{
+				<tr>
+					<td>@forecast.Date.ToShortDateString()</td>
+					<td>@forecast.TemperatureC</td>
+					<td>@forecast.TemperatureF</td>
+					<td>@forecast.Summary</td>
+				</tr>
+			}
+		</TableBody>
+	</Table>
+}
+
+@code {
+	private WeatherForecast[]? forecasts;
+
+	protected override async Task OnInitializedAsync()
+	{
+		forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+	}
+}

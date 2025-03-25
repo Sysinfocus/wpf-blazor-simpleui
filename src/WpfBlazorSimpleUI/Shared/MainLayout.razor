@@ -1,0 +1,50 @@
+﻿@inherits LayoutComponentBase
+
+<div class="container" @onclick="initialization.HandleMainLayoutClickEvent">
+    <Sidebar Items="@sideBarItems" Show="@showMenu" IsSimpleSideBar="@isSimple"  Height="100%" OnMenuClick="HandleMenuClick"
+        HoverBackground="purple" HoverForeground="white">
+        <SidebarHeader>
+            <h4 class="large g8 flex jcc mt05 mb05 pointer" @onclick="@(() => browserExtensions.Goto("."))">
+                <Icon Name="sensors" Size="32px" />
+                WPF Blazor SimpleUI
+            </h4>
+        </SidebarHeader>
+        <SidebarFooter>
+            <small class="muted-color flex jcc mt05 mb05" style="font-size:0.7rem">&copy; 2025, WPF Blazor SimpleUI.</small>
+        </SidebarFooter>
+    </Sidebar>
+
+    <div class="flex-col g8 f1">
+        <div class="flex jcsb" style="padding: 0.9rem 1rem 0.05rem">
+            <div>
+                <Icon Size="20px" Name="apps" OnClick="() => showMenu = !showMenu" />
+                <Icon Size="20px" Name="switch" OnClick="() => isSimple = !isSimple" />
+            </div>
+            <Icon Size="20px" Name="@(initialization.CurrentTheme == "light" ? "dark_mode" : "light_mode")" OnClick="initialization.ToggleTheme" />
+        </div>
+        <Separator />
+        <div style="padding: 0.25rem 1rem">@Body</div>
+    </div>
+</div>
+
+@code
+{
+    bool showMenu = true, isSimple;
+
+    SideBarItem[] sideBarItems = [
+        new("Navigation", 1, 0, "Home", "home"),
+        new("Navigation", 2, 0, "Counter", "add"),
+        new("Navigation", 3, 0, "Weather", "cloud"),
+    ];
+
+    private void HandleMenuClick(SideBarItem item)
+    {
+        browserExtensions.Goto(item.Name);
+        App.Current.MainWindow.Title = item.Name;
+    } 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await initialization.InitializeTheme();
+    }
+}
