@@ -5,7 +5,7 @@
     <Sidebar Items="@sideBarItems" Show="@showMenu" IsSimpleSideBar="@isSimple"  Height="100%" OnMenuClick="HandleMenuClick"
         HoverBackground="purple" HoverForeground="white">
         <SidebarHeader>
-            <h4 class="large g8 flex jcc mt1 mb05 pointer" @onclick="@(() => browserExtensions.Goto("."))">
+            <h4 class="large g8 flex jcc mt1 mb05 pointer" @onclick="GotoHome">
                 <Icon Name="sensors" Size="32px" />
                 WPF Blazor SimpleUI
             </h4>
@@ -41,23 +41,31 @@
         new("Navigation", 1, 0, "Home", "home") { IsActive = true },
         new("Navigation", 2, 0, "Counter", "add"),
         new("Navigation", 3, 0, "Weather", "cloud"),
+        new("Features", 4, 0, "AI Chat", "wand_stars"),
     ];
 
     private void HandleMenuClick(SideBarItem item)
     {
-        browserExtensions.Goto(item.Name);
+        browserExtensions.Goto(item.Name.Replace(" ", ""));
         App.Current.MainWindow.Title = item.Name;
     }
 
-    private void HandleMinimized(MouseEventArgs args)
-        => App.Current.MainWindow.WindowState = windowState.Minimized;
+    private void GotoHome()
+    {
+        HandleMenuClick(sideBarItems[0]);
+        foreach (var item in sideBarItems) item.IsActive = false;
+        sideBarItems[0].IsActive = true;
+    }
 
-    private void HandleMaximizedRestore(MouseEventArgs args)
-        => App.Current.MainWindow.WindowState = App.Current.MainWindow.WindowState == windowState.Maximized
-            ? windowState.Normal
-            : windowState.Maximized;
+    // private void HandleMinimized(MouseEventArgs args)
+    //     => App.Current.MainWindow.WindowState = windowState.Minimized;
 
-    private void HandleClose(MouseEventArgs args) => App.Current.MainWindow.Close();
+    // private void HandleMaximizedRestore(MouseEventArgs args)
+    //     => App.Current.MainWindow.WindowState = App.Current.MainWindow.WindowState == windowState.Maximized
+    //         ? windowState.Normal
+    //         : windowState.Maximized;
+
+    // private void HandleClose(MouseEventArgs args) => App.Current.MainWindow.Close();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
