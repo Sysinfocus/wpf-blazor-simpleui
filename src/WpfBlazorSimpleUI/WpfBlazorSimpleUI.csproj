@@ -7,11 +7,12 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<IsPackable>false</IsPackable>
-	</PropertyGroup>
+	</PropertyGroup>	
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.0.50" />
 		<PackageReference Include="Sysinfocus.AspNetCore.Components" Version="0.0.2.7" />
+		<PackageReference Include="Sysinfocus.AspNetCore.Components.AIChat" Version="0.0.0.2" />
 	</ItemGroup>
 	
 	<ItemGroup>

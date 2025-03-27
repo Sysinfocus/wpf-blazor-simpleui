@@ -1,0 +1,96 @@
+@page "/AIChat"
+@using System.Text.Json
+
+<div class="flex jcsb g8">
+    <div class="flex">
+        <h2>AI Chat</h2>
+        <Icon Name="settings" Tooltip="Click to setup APIs" OnClick="LoadSettings" />
+    </div>
+</div>
+<p class="muted mb1">Your settings are not stored and will be cleared when you leave this page.</p>
+
+@if (settings is not null)
+{
+    <div id="aiChat" style="background: var(--primary-bg); color: var(--primary-fg); height: calc(100svh - 155px)">
+        <AIChat Height="100%" Width="100%" Settings="@settings" />
+    </div>
+
+    <Dialog Show="@show" Width="600px" OnClose="() => show = false" ShowCloseIcon>
+        <Header>
+            <div class="flex-col g4">
+                <p class="large">AI Chat Settings</p>
+                <p class="muted">Make changes and Click save when you're done.</p>
+            </div>
+        </Header>
+        <Content>
+            <div class="flex-col mtb1">
+                <Input Label="Endpoint" Info="This is your API endpoint" TItem="string" @bind-Value="@settings.Endpoint" />
+                <Input Label="Authorization" Info="This is your Token / Key" TItem="string" @bind-Value="@settings.Authorization" />
+                <Textarea Rows="8" Label="Body" Info="This is the body of the API call. Your query will be injected in place of $PROMPT$" @bind-Text="@settings.Body" />
+            </div>
+        </Content>
+        <Footer>
+            <div class="flex jcsb" style="width: 100%">
+                <Checkbox Label="Save to Local Storage" Checked="@saveToLocalStorage" OnClick="x => saveToLocalStorage = x" />
+                <Button Text="Save changes" OnClick="SaveSettings" />
+            </div>
+        </Footer>
+    </Dialog>
+}
+
+@code
+{
+    private bool show, saveToLocalStorage;
+    AIChatSettings? settings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var apiData = await browserExtensions.GetFromLocalStorage("ai-api-settings");
+        if (apiData is not null)
+        {
+            settings = JsonSerializer.Deserialize<AIChatSettings>(apiData);
+            saveToLocalStorage = true;
+        }
+        else
+        {
+            string body = @"{
+    ""messages"": [{ ""role"": ""user"", ""content"": $PROMPT$ } ],
+    ""model"": ""llama-3.3-70b-versatile"",
+    ""stream"": true
+}";
+
+            settings = new()
+            {
+                Endpoint = "https://api.groq.com/openai/v1/chat/completions",
+                Authorization = "Bearer enter-your-groq-api-key-here",
+                Body = body.Replace("'", "\"")
+            };
+        }
+    }
+
+    private async Task LoadSettings()
+    {
+        var apiData = await browserExtensions.GetFromLocalStorage("ai-api-settings");
+        saveToLocalStorage = false;
+        if (apiData is not null)
+        {
+            settings = JsonSerializer.Deserialize<AIChatSettings>(apiData);
+            saveToLocalStorage = true;
+        }
+        show = true;
+    }
+
+    private async Task SaveSettings()
+    {
+        if (saveToLocalStorage)
+        {
+            var json = JsonSerializer.Serialize(settings);
+            await browserExtensions.SetToLocalStorage("ai-api-settings", json);
+        }
+        else
+        {
+            await browserExtensions.RemoveFromLocalStorage("ai-api-settings");
+        }
+        show = false;
+    }
+}

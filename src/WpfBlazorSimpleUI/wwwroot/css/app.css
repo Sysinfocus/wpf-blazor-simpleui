@@ -1,6 +1,7 @@
 ﻿* { margin:0;padding:0;box-sizing:border-box}
 .container {height:100dvh;display:flex;gap:0}
 body{transition:none !important}
+:not(input, textarea) { user-select: none }
 
 #blazor-error-ui {
     background: lightyellow;
