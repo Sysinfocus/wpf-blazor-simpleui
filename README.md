@@ -15,6 +15,7 @@ A basic WPF app that uses Blazor and Sysinfocus simple/ui component library.
 - A basic WPF app
 - Wired with Blazor (BlazorWebView more specifically)
 - Home, Counter and Weather pages setup to display using **Simple/ui** components.
+- Added **AI Chat** feature which uses Groq api which you can get one for free @ https://console.groq.com/keys
 - The title bar changes according to page loaded.
 - Use of **Sidebar** component with toggle to show/hide it.
 - Use of **Presenter** component.
